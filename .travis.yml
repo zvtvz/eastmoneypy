@@ -7,10 +7,6 @@ install:
 - pip install 'pytest>=3.6' --force-reinstall
 - pip install pytest-cov codecov requests
 - pip install -r ./requirements.txt
-script:
-- pytest  tests/ --cov-report term --cov=./eastmoneypy
-after_success:
-- codecov
 deploy:
   provider: pypi
   user: foolcage
