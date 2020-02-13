@@ -1,0 +1,24 @@
+language: python
+cache: pip
+python:
+- '3.6'
+install:
+- git fetch --tags --depth=500
+- pip install 'pytest>=3.6' --force-reinstall
+- pip install pytest-cov codecov requests
+- pip install -r ./requirements.txt
+script:
+- pytest  tests/ --cov-report term --cov=./eastmoneypy
+after_success:
+- codecov
+deploy:
+  provider: pypi
+  user: foolcage
+  password:
+    secure: kfoWW+yWijQPls4rLWJc0mzIjg+jazJFq8wtCiUiNAsejyubTGm44T4H+1S8YGBGe1atU/GUV/o3WaNxfzEHdJCT19DcgcA+jY97fqJE4DciexjI7bfOnLLch1xzfRkgReJJD5urxXP6Mg8WAf3lqpDZEbhWmuDuozWvCnUhUyZ/zEbXxEKPLNyGTvL2YErkPXi4mkBTDik/kLiZTUTbgaDV0NWUR1vIbN8D6SeGAu3yR0zmJ792HpA1ZNmRP0ICq9/IKjtq3RKorQtdXXwX31/jIglIoVHH/u3m6u5TcH090ZD1drhG73f1sDUbawa07rGnRx8hWUbaddzvOwcsafTKL1WFmJhw7X+kWbnY+UwVZocfsunVD/I49qxrPwhKiIBl/ZVbhEofDfNHknNh1ZwGuFOsw0+5doHV1OhoQzN/0iA0xMmjVv9GrYs/ALkPRzNpbK8zkTK8dHuXouBT9s6Qz+QUvumi/ZQPw5tJtw33o74Fy2wtFyqDMTMMXKLbkHNcruDDEkQ4Ti5DYIL6uZJHs+cFINYRTRSzA98/dcTgdNkWZXiw8vc5Fj4ZRx9wzKTlfN+M2xxtv0tkq9unfuHOxTLSyv7r+oogjZukIG3Nd4HvNjOo+vXL+wD6tS06TXJDqXffKcqMrM94sSUWvc9wf5VdoZj7fI6QScsyYEI=
+  on:
+    tags: true
+notifications:
+  email:
+    recipients:
+    - 5533061@qq.com
