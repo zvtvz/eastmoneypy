@@ -68,8 +68,13 @@ def rename_group(group_id, group_name):
     return ret
 
 
-def del_group(group_id):
+def del_group(group_name=None, group_id=None):
     url = 'http://quote.eastmoney.com/zixuan/api/zxg/deletegroup'
+    if not group_id:
+        assert group_name is not None
+        group_id = get_group_id(group_name)
+        if not group_id:
+            raise Exception(f'could not find group:{group_name}')
 
     resp = requests.post(url, headers=HEADER,
                          data={'groupid': group_id})
@@ -78,14 +83,19 @@ def del_group(group_id):
     return ret
 
 
-def add_to_group(code, entity_type='stock', group_id=None, group_name=None):
+def get_group_id(group_name):
+    groups = get_groups()
+    groups = [group for group in groups if group['name'] == group_name]
+    if groups:
+        return groups[0]['id']
+    return None
+
+
+def add_to_group(code, entity_type='stock', group_name=None, group_id=None):
     if not group_id:
         assert group_name is not None
-        groups = get_groups()
-        groups = [group for group in groups if group['name'] == group_name]
-        if groups:
-            group_id = groups[0]['id']
-        else:
+        group_id = get_group_id(group_name)
+        if not group_id:
             raise Exception(f'could not find group:{group_name}')
     url = 'http://quote.eastmoney.com/zixuan/api/zxg/addstock'
     resp = requests.post(url, headers=HEADER,
@@ -104,9 +114,13 @@ def to_eastmoney_code(code, entity_type='stock'):
             return f'0.{code}'
 
 
-if __name__ == '__main__':
-    print(get_groups())
-
-    add_to_group('000878', group_name='ing')
-
 __all__ = ['create_group', 'get_groups', 'rename_group', 'del_group', 'add_to_group', 'to_eastmoney_code']
+
+if __name__ == '__main__':
+    groups = get_groups()
+    if len(groups) >= 9:
+        del_group(group_id=groups[-2]['id'])
+
+    create_group('tmp')
+    add_to_group('000888', group_name='tmp')
+    del_group('tmp')
