@@ -5,11 +5,13 @@
 [![codecov.io](https://codecov.io/github/zvtvz/eastmoneypy/coverage.svg?branch=master)](https://codecov.io/github/zvtvz/eastmoneypy)
 [![HitCount](http://hits.dwyl.io/zvtvz/eastmoneypy.svg)](http://hits.dwyl.io/zvtvz/eastmoneypy)
 
-eastmoneypy是使用python来对[东方财富](http://www.eastmoney.com/)进行操作的一个库。
-
-## 已实现功能：
-* 管理自选股
-
+eastmoneypy是使用python来对[东方财富](http://www.eastmoney.com/)进行操作的一个库。  
+目前在[zvt](https://github.com/zvtvz/zvt)中用于选股后自动添加到东财app，可参考该[issue](https://github.com/zvtvz/zvt/issues/48)
+## 实现功能：
+- [x] 管理组合
+- [x] 添加A股标的到组合
+- [ ] 添加ETF
+- [ ] 添加港股
 
 
 ## 安装
@@ -66,5 +68,16 @@ Out[4]: True
 In [5]: del_group('tmp')
 ```
 
-# 联系方式  
-微信　foolcage
+## 联系方式  
+
+QQ群:300911873  
+
+个人微信:foolcage 添加暗号:zvt  
+<img src="https://raw.githubusercontent.com/zvtvz/zvt/master/docs/imgs/wechat.jpeg" width="25%" alt="Wechat">
+
+------
+微信公众号:  
+<img src="https://raw.githubusercontent.com/zvtvz/zvt/master/docs/imgs/gongzhonghao.jpg" width="25%" alt="Wechat">
+
+知乎专栏:  
+https://zhuanlan.zhihu.com/automoney
