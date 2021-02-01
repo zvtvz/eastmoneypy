@@ -1,0 +1,119 @@
+{
+  "state": 0,
+  "message": "成功",
+  "data": {
+    "ginfolist": [
+      {
+        "gid": "1",
+        "gname": "自选股",
+        "fromclient": "web",
+        "ver": 772
+      },
+      {
+        "gid": "4",
+        "gname": "etf",
+        "fromclient": "app",
+        "ver": 65
+      },
+      {
+        "gid": "153",
+        "gname": "可能",
+        "fromclient": "app",
+        "ver": 17
+      },
+      {
+        "gid": "156",
+        "gname": "test",
+        "fromclient": "web",
+        "ver": 0
+      }
+    ],
+    "defstkinfolist": [
+      {
+        "security": "0$000778$24729626186070",
+        "star": false,
+        "updatetime": 20210201175419,
+        "price": "3.6"
+      },
+      {
+        "security": "0$000338$43817606988714",
+        "star": false,
+        "updatetime": 20210201175355,
+        "price": "21.88"
+      },
+      {
+        "security": "0$300315$27044766998602",
+        "star": false,
+        "updatetime": 20210128074740,
+        "price": "5.67"
+      },
+      {
+        "security": "0$002959$32868148433274",
+        "star": false,
+        "updatetime": 20210127192916,
+        "price": "105.1"
+      },
+      {
+        "security": "0$002572$28459115792694",
+        "star": false,
+        "updatetime": 20210126133232,
+        "price": "27.89"
+      },
+      {
+        "security": "116$02628$36045654226909",
+        "star": false,
+        "updatetime": 20210126111941,
+        "price": "17.1"
+      },
+      {
+        "security": "116$01810$41461401400001",
+        "star": false,
+        "updatetime": 20210126101439,
+        "price": "31.1"
+      },
+      {
+        "security": "0$002594$29473419956854",
+        "star": false,
+        "updatetime": 20210126083948,
+        "price": "260"
+      },
+      {
+        "security": "0$002475$34574656580054",
+        "star": false,
+        "updatetime": 20210126083859,
+        "price": "55.21"
+      },
+      {
+        "security": "0$300676$44479835609750",
+        "star": false,
+        "updatetime": 20210126081214,
+        "price": "169.33"
+      },
+      {
+        "security": "0$002027$11807076919078",
+        "star": false,
+        "updatetime": 20210126080425,
+        "price": "12.18"
+      },
+      {
+        "security": "116$00358$35920462227709",
+        "star": false,
+        "updatetime": 20210126074424,
+        "price": "14.46"
+      },
+      {
+        "security": "0$000895$34562768567722",
+        "star": false,
+        "updatetime": 20210126074141,
+        "price": "50.35"
+      },
+      {
+        "security": "0$000930$13899667630390",
+        "star": false,
+        "updatetime": 20210126072828,
+        "price": "10.11"
+      }
+    ],
+    "webindex": ""
+  }
+}
