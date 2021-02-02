@@ -23,12 +23,13 @@ pip3 install eastmoneypy -i http://pypi.douban.com/simple --trusted-host pypi.do
 
 打开网址并登录:http://quote.eastmoney.com/zixuan/
 
-<p align="center"><img src='./http-header1.png'/></p>
+<p align="center"><img src='./key.png'/></p>
 
-在用户目录里面，找到eastmoney-home/config.json，把copy的header设置到里面
+在用户目录里面，找到eastmoney-home/config.json，设置header和appkey
 ```
 {
-  "header": "parse your total header here"
+  "header": "parse your total header here",
+  "appkey": "parse your appkey here"
 }
 ```
 
@@ -68,9 +69,7 @@ Out[4]: True
 In [5]: del_group('tmp')
 ```
 
-## 联系方式  
-
-QQ群:300911873  
+## 联系方式
 
 个人微信:foolcage 添加暗号:zvt  
 <img src="https://raw.githubusercontent.com/zvtvz/zvt/master/docs/imgs/wechat.jpeg" width="25%" alt="Wechat">
