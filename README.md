@@ -16,7 +16,7 @@ eastmoneypy是使用python来对[东方财富](http://www.eastmoney.com/)进行�
 
 ## 安装
 ```
-pip3 install eastmoneypy -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+pip3 install -U eastmoneypy
 ```
 
 ## 设置
