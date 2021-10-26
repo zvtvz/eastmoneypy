@@ -1,15 +1,15 @@
 [![image](https://img.shields.io/pypi/v/eastmoneypy.svg)](https://pypi.org/project/eastmoneypy/)
 [![image](https://img.shields.io/pypi/l/eastmoneypy.svg)](https://pypi.org/project/eastmoneypy/)
 [![image](https://img.shields.io/pypi/pyversions/eastmoneypy.svg)](https://pypi.org/project/eastmoneypy/)
-[![Build Status](https://api.travis-ci.org/zvtvz/eastmoneypy.svg?branch=master)](https://travis-ci.org/zvtvz/eastmoneypy)
-[![codecov.io](https://codecov.io/github/zvtvz/eastmoneypy/coverage.svg?branch=master)](https://codecov.io/github/zvtvz/eastmoneypy)
-[![HitCount](http://hits.dwyl.io/zvtvz/eastmoneypy.svg)](http://hits.dwyl.io/zvtvz/eastmoneypy)
+[![build](https://github.com/zvtvz/eastmoneypy/actions/workflows/build.yaml/badge.svg)](https://github.com/zvtvz/eastmoneypy/actions/workflows/build.yml)
+[![package](https://github.com/zvtvz/eastmoneypy/actions/workflows/package.yaml/badge.svg)](https://github.com/zvtvz/eastmoneypy/actions/workflows/package.yaml)
 
 eastmoneypy是使用python来对[东方财富](http://www.eastmoney.com/)进行操作的一个库。  
 目前在[zvt](https://github.com/zvtvz/zvt)中用于选股后自动添加到东财app，可参考该[issue](https://github.com/zvtvz/zvt/issues/48)
 ## 实现功能：
 - [x] 管理组合
 - [x] 添加A股标的到组合
+- [x] 添加板块到组合
 - [ ] 添加ETF
 - [ ] 添加港股
 

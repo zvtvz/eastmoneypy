@@ -121,20 +121,11 @@ def to_eastmoney_code(code, entity_type='stock'):
             return f'1%24{code}'
         else:
             return f'0%24{code}'
+    if entity_type == 'block':
+        return f'90${code}'
 
 
 __all__ = ['create_group', 'get_groups', 'rename_group', 'del_group', 'add_to_group', 'to_eastmoney_code']
 
 if __name__ == '__main__':
-    groups = get_groups()
-    print(groups)
-
-    print(get_group_id('bull'))
-
-    del_group('bull')
-
-    g = create_group('bull')
-    print(g)
-
-    print(add_to_group('000999', group_name='bull'))
-    print(add_to_group('688001', group_name='bull'))
+    print(add_to_group('BK1003', group_name='bull',entity_type='block'))
