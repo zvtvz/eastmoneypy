@@ -123,9 +123,15 @@ def to_eastmoney_code(code, entity_type='stock'):
             return f'0%24{code}'
     if entity_type == 'block':
         return f'90${code}'
+    if entity_type == 'stockhk':
+        return f'116%24{code}'
+    if entity_type == 'stockus':
+        return f'105%24{code}'
+    assert False
 
 
 __all__ = ['create_group', 'get_groups', 'rename_group', 'del_group', 'add_to_group', 'to_eastmoney_code']
 
 if __name__ == '__main__':
-    print(add_to_group('BK1003', group_name='bull',entity_type='block'))
+    print(add_to_group('MSFT', group_name='自选股', entity_type='stockus'))
+    # print(add_to_group('BK1003', group_name='概念',entity_type='block'))

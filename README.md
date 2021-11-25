@@ -10,8 +10,9 @@ eastmoneypy是使用python来对[东方财富](http://www.eastmoney.com/)进行�
 - [x] 管理组合
 - [x] 添加A股标的到组合
 - [x] 添加板块到组合
+- [x] 添加港股
+- [x] 添加美股
 - [ ] 添加ETF
-- [ ] 添加港股
 
 
 ## 安装
@@ -59,9 +60,10 @@ Out[3]: (True, {'gid': '350518464', 'msg': '添加组合成功'})
 
 ### 添加股票到组合
 ```
-In [4]: add_to_group('000999',group_name='tmp')
-2020-02-14 23:34:55,287  INFO  MainThread  ret:{'re': True, 'message': '', 'result': {'ver': '1', 'msg': '添加股票成功'}}
-Out[4]: True
+>>> add_to_group('000999', group_name='tmp')
+>>> add_to_group('BK1003', group_name='概念',entity_type='block')
+>>> add_to_group('MSFT', group_name='tmp', entity_type='stockus')
+>>> add_to_group('00700', group_name='tmp' entity_type='stockhk')
 ```
 
 ### 删除组合
