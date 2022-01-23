@@ -1,6 +1,6 @@
 import logging
 
-import demjson
+import demjson3
 import requests
 from requests import Response
 
@@ -41,7 +41,7 @@ def parse_resp(resp: Response, key=None):
     result = resp.text
     js_text = result[result.index('(') + 1:result.index(')')]
 
-    ret = demjson.decode(js_text)
+    ret = demjson3.decode(js_text)
     logger.info(f'ret:{ret}')
     data = ret.get('data')
     if data and key:
@@ -133,5 +133,6 @@ def to_eastmoney_code(code, entity_type='stock'):
 __all__ = ['create_group', 'get_groups', 'rename_group', 'del_group', 'add_to_group', 'to_eastmoney_code']
 
 if __name__ == '__main__':
-    print(add_to_group('MSFT', group_name='自选股', entity_type='stockus'))
+    create_group("111")
+    # print(add_to_group('MSFT', group_name='自选股', entity_type='stockus'))
     # print(add_to_group('BK1003', group_name='概念',entity_type='block'))
