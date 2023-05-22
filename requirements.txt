@@ -1,2 +1,2 @@
-requests == 2.20.1
+requests == 2.31.0
 demjson3 == 3.0.5
