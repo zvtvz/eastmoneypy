@@ -126,8 +126,9 @@ def add_to_group(code, entity_type="stock", group_name=None, group_id=None):
 
 def to_eastmoney_code(code, entity_type="stock"):
     if entity_type == "stock":
+        code_ = int(code)
         # 上海
-        if code >= "333333":
+        if 600000 <= code_ <= 800000:
             return f"1%24{code}"
         else:
             return f"0%24{code}"
@@ -150,9 +151,9 @@ __all__ = [
 ]
 
 if __name__ == "__main__":
-    print(get_groups())
-    create_group("111")
-    print(add_to_group("MSFT", group_name="111", entity_type="stockus"))
-    del_group("111")
+    # print(get_groups())
+    # create_group("111")
+    # print(add_to_group("MSFT", group_name="111", entity_type="stockus"))
+    # del_group("111")
 
-    # print(add_to_group('BK1003', group_name='概念',entity_type='block'))
+    print(add_to_group("430047", group_name="111", entity_type="stock"))
