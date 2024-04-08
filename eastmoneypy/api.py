@@ -161,6 +161,7 @@ __all__ = [
     "get_groups",
     "rename_group",
     "del_group",
+    "get_group_id",
     "add_to_group",
     "list_entities",
     "to_eastmoney_code",
