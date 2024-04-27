@@ -2,7 +2,7 @@ import logging
 
 import demjson3
 import requests
-from requests import Response
+from requests import Response, Session
 
 from eastmoneypy import my_env
 import time
@@ -54,39 +54,50 @@ def parse_resp(resp: Response, key=None):
     else:
         result_value = data
 
+    resp.close()
     return ret["state"], result_value
 
 
-def create_group(group_name):
+def create_group(group_name, session: Session = None):
     ts = current_timestamp()
     url = f"http://myfavor.eastmoney.com/v4/webouter/ag?appkey={APIKEY}&cb=jQuery112404771026622113468_{ts - 10}&gn={group_name}&_={ts}"
-    resp = requests.get(url, headers=HEADER)
+
+    if session:
+        resp = session.get(url, headers=HEADER)
+    else:
+        resp = requests.get(url, headers=HEADER)
 
     _, group = parse_resp(resp)
     return group
 
 
-def get_groups():
+def get_groups(session: Session = None):
     ts = current_timestamp()
     url = f"http://myfavor.eastmoney.com/v4/webouter/ggdefstkindexinfos?appkey={APIKEY}&cb=jQuery112407703233916827181_{ts - 10}&g=1&_={ts}"
 
-    resp = requests.get(url, headers=HEADER)
+    if session:
+        resp = session.get(url, headers=HEADER)
+    else:
+        resp = requests.get(url, headers=HEADER)
 
     _, value = parse_resp(resp, key="ginfolist")
     return value
 
 
-def rename_group(group_id, group_name):
+def rename_group(group_id, group_name, session: Session = None):
     ts = current_timestamp()
     url = f"http://myfavor.eastmoney.com/v4/webouter/mg?appkey={APIKEY}&cb=jQuery112406922055532444666_{ts - 10}&g={group_id}&gn={group_name}&_={ts}"
 
-    resp = requests.get(url, headers=HEADER)
+    if session:
+        resp = session.get(url, headers=HEADER)
+    else:
+        resp = requests.get(url, headers=HEADER)
 
     ret, _ = parse_resp(resp)
     return ret
 
 
-def del_group(group_name=None, group_id=None):
+def del_group(group_name=None, group_id=None, session: Session = None):
     if not group_id:
         assert group_name is not None
         group_id = get_group_id(group_name)
@@ -96,7 +107,10 @@ def del_group(group_name=None, group_id=None):
     ts = current_timestamp()
     url = f"http://myfavor.eastmoney.com/v4/webouter/dg?appkey={APIKEY}&cb=jQuery1124005355240135242356_{ts - 10}&g={group_id}&_={ts}"
 
-    resp = requests.get(url, headers=HEADER)
+    if session:
+        resp = session.get(url, headers=HEADER)
+    else:
+        resp = requests.get(url, headers=HEADER)
 
     ret, _ = parse_resp(resp, key=None)
     return ret
@@ -110,7 +124,7 @@ def get_group_id(group_name):
     return None
 
 
-def list_entities(group_name=None, group_id=None):
+def list_entities(group_name=None, group_id=None, session: Session = None):
     if not group_id:
         assert group_name is not None
         group_id = get_group_id(group_name)
@@ -118,14 +132,20 @@ def list_entities(group_name=None, group_id=None):
             raise Exception(f"could not find group:{group_name}")
     ts = current_timestamp()
     url = f"https://myfavor.eastmoney.com/v4/webouter/gstkinfos?appkey={APIKEY}&cb=jQuery112404771026622113468_{ts - 10}&g={group_id}&_={ts}"
-    resp = requests.get(url, headers=HEADER)
+
+    if session:
+        resp = session.get(url, headers=HEADER)
+    else:
+        resp = requests.get(url, headers=HEADER)
 
     _, result = parse_resp(resp)
     datas = result["stkinfolist"]
     return [data["security"].split("$")[1] for data in datas]
 
 
-def add_to_group(code, entity_type="stock", group_name=None, group_id=None):
+def add_to_group(
+    code, entity_type="stock", group_name=None, group_id=None, session: Session = None
+):
     if not group_id:
         assert group_name is not None
         group_id = get_group_id(group_name)
@@ -134,7 +154,11 @@ def add_to_group(code, entity_type="stock", group_name=None, group_id=None):
     code = to_eastmoney_code(code, entity_type=entity_type)
     ts = current_timestamp()
     url = f"http://myfavor.eastmoney.com/v4/webouter/as?appkey={APIKEY}&cb=jQuery112404771026622113468_{ts - 10}&g={group_id}&sc={code}&_={ts}"
-    resp = requests.get(url, headers=HEADER)
+
+    if session:
+        resp = session.get(url, headers=HEADER)
+    else:
+        resp = requests.get(url, headers=HEADER)
 
     return parse_resp(resp)
 
@@ -174,4 +198,5 @@ if __name__ == "__main__":
     # del_group("111")
 
     # print(add_to_group("430047", group_name="111", entity_type="stock"))
-    print(list_entities(group_name="自选股"))
+    session = requests.Session()
+    print(list_entities(group_name="自选股", session=session))
