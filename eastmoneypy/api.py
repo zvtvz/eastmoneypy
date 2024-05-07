@@ -22,7 +22,7 @@ def chrome_copy_header_to_dict(src):
             try:
                 index = line.index(":")
                 key = line[:index]
-                value = line[index + 1 :]
+                value = line[index + 1:]
                 if key and value:
                     header.setdefault(key.strip(), value.strip())
             except Exception:
@@ -44,7 +44,7 @@ def parse_resp(resp: Response, key=None):
     #   "result": {}
     # }
     result = resp.text
-    js_text = result[result.index("(") + 1 : result.index(")")]
+    js_text = result[result.index("(") + 1: result.index(")")]
 
     ret = demjson3.decode(js_text)
     logger.info(f"ret:{ret}")
@@ -116,8 +116,8 @@ def del_group(group_name=None, group_id=None, session: Session = None):
     return ret
 
 
-def get_group_id(group_name):
-    groups = get_groups()
+def get_group_id(group_name, session=None):
+    groups = get_groups(session=session)
     groups = [group for group in groups if group["gname"] == group_name]
     if groups:
         return groups[0]["gid"]
@@ -144,7 +144,7 @@ def list_entities(group_name=None, group_id=None, session: Session = None):
 
 
 def add_to_group(
-    code, entity_type="stock", group_name=None, group_id=None, session: Session = None
+        code, entity_type="stock", group_name=None, group_id=None, session: Session = None
 ):
     if not group_id:
         assert group_name is not None
