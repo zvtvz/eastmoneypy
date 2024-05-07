@@ -100,7 +100,7 @@ def rename_group(group_id, group_name, session: Session = None):
 def del_group(group_name=None, group_id=None, session: Session = None):
     if not group_id:
         assert group_name is not None
-        group_id = get_group_id(group_name)
+        group_id = get_group_id(group_name, session=session)
         if not group_id:
             raise Exception(f"could not find group:{group_name}")
 
@@ -127,7 +127,7 @@ def get_group_id(group_name, session=None):
 def list_entities(group_name=None, group_id=None, session: Session = None):
     if not group_id:
         assert group_name is not None
-        group_id = get_group_id(group_name)
+        group_id = get_group_id(group_name, session=session)
         if not group_id:
             raise Exception(f"could not find group:{group_name}")
     ts = current_timestamp()
@@ -148,7 +148,7 @@ def add_to_group(
 ):
     if not group_id:
         assert group_name is not None
-        group_id = get_group_id(group_name)
+        group_id = get_group_id(group_name, session=session)
         if not group_id:
             raise Exception(f"could not find group:{group_name}")
     code = to_eastmoney_code(code, entity_type=entity_type)
