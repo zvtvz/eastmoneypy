@@ -59,7 +59,9 @@ def parse_resp(resp: Response, key=None):
 
 
 def create_group(group_name, session: Session = None, api_key: str = APIKEY,
-                 headers: dict = HEADER):
+                 headers=None):
+    if headers is None:
+        headers = HEADER
     ts = current_timestamp()
     url = f"http://myfavor.eastmoney.com/v4/webouter/ag?appkey={api_key}&cb=jQuery112404771026622113468_{ts - 10}&gn={group_name}&_={ts}"
 
@@ -73,7 +75,9 @@ def create_group(group_name, session: Session = None, api_key: str = APIKEY,
 
 
 def get_groups(session: Session = None, api_key: str = APIKEY,
-               headers: dict = HEADER):
+               headers=None):
+    if headers is None:
+        headers = HEADER
     ts = current_timestamp()
     url = f"http://myfavor.eastmoney.com/v4/webouter/ggdefstkindexinfos?appkey={api_key}&cb=jQuery112407703233916827181_{ts - 10}&g=1&_={ts}"
 
@@ -87,7 +91,9 @@ def get_groups(session: Session = None, api_key: str = APIKEY,
 
 
 def rename_group(group_id, group_name, session: Session = None, api_key: str = APIKEY,
-                 headers: dict = HEADER):
+                 headers=None):
+    if headers is None:
+        headers = HEADER
     ts = current_timestamp()
     url = f"http://myfavor.eastmoney.com/v4/webouter/mg?appkey={api_key}&cb=jQuery112406922055532444666_{ts - 10}&g={group_id}&gn={group_name}&_={ts}"
 
@@ -101,7 +107,9 @@ def rename_group(group_id, group_name, session: Session = None, api_key: str = A
 
 
 def del_group(group_name=None, group_id=None, session: Session = None, api_key: str = APIKEY,
-              headers: dict = HEADER):
+              headers=None):
+    if headers is None:
+        headers = HEADER
     if not group_id:
         assert group_name is not None
         group_id = get_group_id(group_name, session=session, api_key=api_key, headers=headers)
@@ -121,7 +129,9 @@ def del_group(group_name=None, group_id=None, session: Session = None, api_key: 
 
 
 def get_group_id(group_name, session=None, api_key: str = APIKEY,
-                 headers: dict = HEADER):
+                 headers=None):
+    if headers is None:
+        headers = HEADER
     groups = get_groups(session=session, api_key=api_key, headers=headers)
     groups = [group for group in groups if group["gname"] == group_name]
     if groups:
@@ -130,7 +140,9 @@ def get_group_id(group_name, session=None, api_key: str = APIKEY,
 
 
 def list_entities(group_name=None, group_id=None, session: Session = None, api_key: str = APIKEY,
-                  headers: dict = HEADER):
+                  headers=None):
+    if headers is None:
+        headers = HEADER
     if not group_id:
         assert group_name is not None
         group_id = get_group_id(group_name, session=session, api_key=api_key, headers=headers)
@@ -152,8 +164,10 @@ def list_entities(group_name=None, group_id=None, session: Session = None, api_k
 
 def add_to_group(
         code, entity_type="stock", group_name=None, group_id=None, session: Session = None, api_key: str = APIKEY,
-        headers: dict = HEADER
+        headers=None
 ):
+    if headers is None:
+        headers = HEADER
     if not group_id:
         assert group_name is not None
         group_id = get_group_id(group_name, session=session, api_key=api_key, headers=headers)
