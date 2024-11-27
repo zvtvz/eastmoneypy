@@ -1,11 +1,11 @@
 import logging
+import time
 
 import demjson3
 import requests
 from requests import Response, Session
 
 from eastmoneypy import my_env
-import time
 
 logger = logging.getLogger(__name__)
 
@@ -58,85 +58,92 @@ def parse_resp(resp: Response, key=None):
     return ret["state"], result_value
 
 
-def create_group(group_name, session: Session = None):
+def create_group(group_name, session: Session = None, api_key: str = APIKEY,
+                 headers: dict = HEADER):
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/ag?appkey={APIKEY}&cb=jQuery112404771026622113468_{ts - 10}&gn={group_name}&_={ts}"
+    url = f"http://myfavor.eastmoney.com/v4/webouter/ag?appkey={api_key}&cb=jQuery112404771026622113468_{ts - 10}&gn={group_name}&_={ts}"
 
     if session:
-        resp = session.get(url, headers=HEADER)
+        resp = session.get(url, headers=headers)
     else:
-        resp = requests.get(url, headers=HEADER)
+        resp = requests.get(url, headers=headers)
 
     _, group = parse_resp(resp)
     return group
 
 
-def get_groups(session: Session = None):
+def get_groups(session: Session = None, api_key: str = APIKEY,
+               headers: dict = HEADER):
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/ggdefstkindexinfos?appkey={APIKEY}&cb=jQuery112407703233916827181_{ts - 10}&g=1&_={ts}"
+    url = f"http://myfavor.eastmoney.com/v4/webouter/ggdefstkindexinfos?appkey={api_key}&cb=jQuery112407703233916827181_{ts - 10}&g=1&_={ts}"
 
     if session:
-        resp = session.get(url, headers=HEADER)
+        resp = session.get(url, headers=headers)
     else:
-        resp = requests.get(url, headers=HEADER)
+        resp = requests.get(url, headers=headers)
 
     _, value = parse_resp(resp, key="ginfolist")
     return value
 
 
-def rename_group(group_id, group_name, session: Session = None):
+def rename_group(group_id, group_name, session: Session = None, api_key: str = APIKEY,
+                 headers: dict = HEADER):
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/mg?appkey={APIKEY}&cb=jQuery112406922055532444666_{ts - 10}&g={group_id}&gn={group_name}&_={ts}"
+    url = f"http://myfavor.eastmoney.com/v4/webouter/mg?appkey={api_key}&cb=jQuery112406922055532444666_{ts - 10}&g={group_id}&gn={group_name}&_={ts}"
 
     if session:
-        resp = session.get(url, headers=HEADER)
+        resp = session.get(url, headers=headers)
     else:
-        resp = requests.get(url, headers=HEADER)
+        resp = requests.get(url, headers=headers)
 
     ret, _ = parse_resp(resp)
     return ret
 
 
-def del_group(group_name=None, group_id=None, session: Session = None):
+def del_group(group_name=None, group_id=None, session: Session = None, api_key: str = APIKEY,
+              headers: dict = HEADER):
     if not group_id:
         assert group_name is not None
-        group_id = get_group_id(group_name, session=session)
+        group_id = get_group_id(group_name, session=session, api_key=api_key, headers=headers)
         if not group_id:
             raise Exception(f"could not find group:{group_name}")
 
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/dg?appkey={APIKEY}&cb=jQuery1124005355240135242356_{ts - 10}&g={group_id}&_={ts}"
+    url = f"http://myfavor.eastmoney.com/v4/webouter/dg?appkey={api_key}&cb=jQuery1124005355240135242356_{ts - 10}&g={group_id}&_={ts}"
 
     if session:
-        resp = session.get(url, headers=HEADER)
+        resp = session.get(url, headers=headers)
     else:
-        resp = requests.get(url, headers=HEADER)
+        resp = requests.get(url, headers=headers)
 
     ret, _ = parse_resp(resp, key=None)
     return ret
 
 
-def get_group_id(group_name, session=None):
-    groups = get_groups(session=session)
+def get_group_id(group_name, session=None, api_key: str = APIKEY,
+                 headers: dict = HEADER):
+    groups = get_groups(session=session, api_key=api_key, headers=headers)
     groups = [group for group in groups if group["gname"] == group_name]
     if groups:
         return groups[0]["gid"]
     return None
 
 
-def list_entities(group_name=None, group_id=None, session: Session = None):
+def list_entities(group_name=None, group_id=None, session: Session = None, api_key: str = APIKEY,
+                  headers: dict = HEADER):
     if not group_id:
         assert group_name is not None
-        group_id = get_group_id(group_name, session=session)
+        group_id = get_group_id(group_name, session=session, api_key=api_key, headers=headers)
         if not group_id:
             raise Exception(f"could not find group:{group_name}")
+
     ts = current_timestamp()
-    url = f"https://myfavor.eastmoney.com/v4/webouter/gstkinfos?appkey={APIKEY}&cb=jQuery112404771026622113468_{ts - 10}&g={group_id}&_={ts}"
+    url = f"https://myfavor.eastmoney.com/v4/webouter/gstkinfos?appkey={api_key}&cb=jQuery112404771026622113468_{ts - 10}&g={group_id}&_={ts}"
 
     if session:
-        resp = session.get(url, headers=HEADER)
+        resp = session.get(url, headers=headers)
     else:
-        resp = requests.get(url, headers=HEADER)
+        resp = requests.get(url, headers=headers)
 
     _, result = parse_resp(resp)
     datas = result["stkinfolist"]
@@ -144,21 +151,23 @@ def list_entities(group_name=None, group_id=None, session: Session = None):
 
 
 def add_to_group(
-        code, entity_type="stock", group_name=None, group_id=None, session: Session = None
+        code, entity_type="stock", group_name=None, group_id=None, session: Session = None, api_key: str = APIKEY,
+        headers: dict = HEADER
 ):
     if not group_id:
         assert group_name is not None
-        group_id = get_group_id(group_name, session=session)
+        group_id = get_group_id(group_name, session=session, api_key=api_key, headers=headers)
         if not group_id:
             raise Exception(f"could not find group:{group_name}")
+
     code = to_eastmoney_code(code, entity_type=entity_type)
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/as?appkey={APIKEY}&cb=jQuery112404771026622113468_{ts - 10}&g={group_id}&sc={code}&_={ts}"
+    url = f"http://myfavor.eastmoney.com/v4/webouter/as?appkey={api_key}&cb=jQuery112404771026622113468_{ts - 10}&g={group_id}&sc={code}&_={ts}"
 
     if session:
-        resp = session.get(url, headers=HEADER)
+        resp = session.get(url, headers=headers)
     else:
-        resp = requests.get(url, headers=HEADER)
+        resp = requests.get(url, headers=headers)
 
     return parse_resp(resp)
 
@@ -192,11 +201,23 @@ __all__ = [
 ]
 
 if __name__ == "__main__":
-    # print(get_groups())
-    # create_group("111")
-    # print(add_to_group("MSFT", group_name="111", entity_type="stockus"))
-    # del_group("111")
-
-    # print(add_to_group("430047", group_name="111", entity_type="stock"))
-    session = requests.Session()
-    print(list_entities(group_name="自选股", session=session))
+    print(get_groups())
+    create_group("大局")
+    print(add_to_group("MSFT", group_name="大局", entity_type="stockus"))
+    print(list_entities(group_name="大局"))
+    print(get_group_id(group_name="大局"))
+    del_group("大局")
+    # find the header in chrome
+    headers = chrome_copy_header_to_dict('''
+Accept: */*
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7
+Connection: keep-alive
+sec-ch-ua-platform: "macOS"
+    ''')
+    print(get_groups(headers=headers))
+    create_group("大局", headers=headers)
+    print(add_to_group("MSFT", group_name="大局", entity_type="stockus", headers=headers))
+    print(list_entities(group_name="大局", headers=headers))
+    print(get_group_id(group_name="大局", headers=headers))
+    del_group("大局", headers=headers)
