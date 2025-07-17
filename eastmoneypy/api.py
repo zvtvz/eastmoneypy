@@ -32,6 +32,8 @@ def chrome_copy_header_to_dict(src):
 
 HEADER = chrome_copy_header_to_dict(my_env["header"])
 
+# 这个其实是api的版本信息，务必使用最新的
+# 认证信息其实是在headers里面的cookie中
 APIKEY = my_env["appkey"]
 
 
@@ -47,7 +49,7 @@ def parse_resp(resp: Response, key=None):
     js_text = result[result.index("(") + 1: result.index(")")]
 
     ret = demjson3.decode(js_text)
-    logger.info(f"ret:{ret}")
+    logger.debug(f"ret:{ret}")
     data = ret.get("data")
     if data and key:
         result_value = data.get(key)
@@ -63,7 +65,7 @@ def create_group(group_name, session: Session = None, api_key: str = APIKEY,
     if headers is None:
         headers = HEADER
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/ag?appkey={api_key}&cb=jQuery112404771026622113468_{ts - 10}&gn={group_name}&_={ts}"
+    url = f"https://myfavor.eastmoney.com/v4/webouter/ag?appkey={api_key}&cb=jQuery112404771026622113468_{ts - 10}&gn={group_name}&_={ts}"
 
     if session:
         resp = session.get(url, headers=headers)
@@ -79,7 +81,7 @@ def get_groups(session: Session = None, api_key: str = APIKEY,
     if headers is None:
         headers = HEADER
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/ggdefstkindexinfos?appkey={api_key}&cb=jQuery112407703233916827181_{ts - 10}&g=1&_={ts}"
+    url = f"https://myfavor.eastmoney.com/v4/webouter/ggdefstkindexinfos?appkey={api_key}&cb=jQuery112407703233916827181_{ts - 10}&g=1&_={ts}"
 
     if session:
         resp = session.get(url, headers=headers)
@@ -95,7 +97,7 @@ def rename_group(group_id, group_name, session: Session = None, api_key: str = A
     if headers is None:
         headers = HEADER
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/mg?appkey={api_key}&cb=jQuery112406922055532444666_{ts - 10}&g={group_id}&gn={group_name}&_={ts}"
+    url = f"https://myfavor.eastmoney.com/v4/webouter/mg?appkey={api_key}&cb=jQuery112406922055532444666_{ts - 10}&g={group_id}&gn={group_name}&_={ts}"
 
     if session:
         resp = session.get(url, headers=headers)
@@ -117,7 +119,7 @@ def del_group(group_name=None, group_id=None, session: Session = None, api_key: 
             raise Exception(f"could not find group:{group_name}")
 
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/dg?appkey={api_key}&cb=jQuery1124005355240135242356_{ts - 10}&g={group_id}&_={ts}"
+    url = f"https://myfavor.eastmoney.com/v4/webouter/dg?appkey={api_key}&cb=jQuery1124005355240135242356_{ts - 10}&g={group_id}&_={ts}"
 
     if session:
         resp = session.get(url, headers=headers)
@@ -163,9 +165,16 @@ def list_entities(group_name=None, group_id=None, session: Session = None, api_k
 
 
 def add_to_group(
-        code, entity_type="stock", group_name=None, group_id=None, session: Session = None, api_key: str = APIKEY,
+        code=None, entity_type="stock", entity_id=None, group_name=None, group_id=None, session: Session = None,
+        api_key: str = APIKEY,
         headers=None
 ):
+    if code is None and entity_id is None:
+        raise Exception("code or entity_id must be set")
+
+    if code is not None and entity_id is not None:
+        raise Exception("code and entity_id cannot be both set")
+
     if headers is None:
         headers = HEADER
     if not group_id:
@@ -174,9 +183,12 @@ def add_to_group(
         if not group_id:
             raise Exception(f"could not find group:{group_name}")
 
-    code = to_eastmoney_code(code, entity_type=entity_type)
+    if entity_id:
+        em_sec_id = to_em_sec_id(entity_id)
+    else:
+        em_sec_id = to_eastmoney_code(code, entity_type=entity_type)
     ts = current_timestamp()
-    url = f"http://myfavor.eastmoney.com/v4/webouter/as?appkey={api_key}&cb=jQuery112404771026622113468_{ts - 10}&g={group_id}&sc={code}&_={ts}"
+    url = f"https://myfavor.eastmoney.com/v4/webouter/as?appkey={api_key}&cb=jQuery112404771026622113468_{ts - 10}&g={group_id}&sc={em_sec_id}&_={ts}"
 
     if session:
         resp = session.get(url, headers=headers)
@@ -203,6 +215,69 @@ def to_eastmoney_code(code, entity_type="stock"):
     assert False
 
 
+exchange_map_em_flag = {
+    #: 深证交易所
+    "sz": 0,
+    # ":上证交易所
+    "sh": 1,
+    # ":北交所
+    "bj": 0,
+    # ":纳斯达克
+    "nasdaq": 105,
+    # ":纽交所
+    "nyse": 106,
+    # ":中国金融期货交易所
+    "cffex": 8,
+    # ":上海期货交易所
+    "shfe": 113,
+    # ":大连商品交易所
+    "dce": 114,
+    # ":郑州商品交易所
+    "czce": 115,
+    # ":上海国际能源交易中心
+    "ine": 142,
+    # ":港交所
+    "hk": 116,
+    # ":中国行业/概念板块
+    "cn": 90,
+    # ":美国指数
+    "us": 100,
+    # ":汇率
+    "forex": 119,
+}
+
+
+def decode_entity_id(entity_id: str):
+    """
+    decode entity id to entity_type, exchange, code
+
+    :param entity_id:
+    :return: tuple with format (entity_type, exchange, code)
+    """
+    result = entity_id.split("_")
+    entity_type = result[0]
+    exchange = result[1]
+    code = "".join(result[2:])
+    return entity_type, exchange, code
+
+
+def to_em_sec_id(entity_id):
+    entity_type, exchange, code = decode_entity_id(entity_id)
+
+    # 主力合约
+    if entity_type == "future" and code[-1].isalpha():
+        code = code + "m"
+    if entity_type == "currency" and "CNYC" in code:
+        return f"120%24{code}"
+    if entity_type == "block":
+        return f"90${code}"
+
+    em_exchange_code = exchange_map_em_flag.get(exchange)
+    if em_exchange_code is None:
+        raise ValueError(f"Unsupported exchange: {exchange}")
+    return f"{em_exchange_code}%24{code}"
+
+
 __all__ = [
     "create_group",
     "get_groups",
@@ -215,23 +290,9 @@ __all__ = [
 ]
 
 if __name__ == "__main__":
-    print(get_groups())
-    create_group("大局")
-    print(add_to_group("MSFT", group_name="大局", entity_type="stockus"))
-    print(list_entities(group_name="大局"))
-    print(get_group_id(group_name="大局"))
-    del_group("大局")
-    # find the header in chrome
-    headers = chrome_copy_header_to_dict('''
-Accept: */*
-Accept-Encoding: gzip, deflate, br, zstd
-Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7
-Connection: keep-alive
-sec-ch-ua-platform: "macOS"
-    ''')
-    print(get_groups(headers=headers))
-    create_group("大局", headers=headers)
-    print(add_to_group("MSFT", group_name="大局", entity_type="stockus", headers=headers))
-    print(list_entities(group_name="大局", headers=headers))
-    print(get_group_id(group_name="大局", headers=headers))
-    del_group("大局", headers=headers)
+    print(add_to_group(entity_id="stock_sh_601162", group_name="自选股"))
+    print(add_to_group(entity_id="stock_sz_000777", group_name="自选股"))
+    print(add_to_group(entity_id="stock_bj_920002", group_name="自选股"))
+    print(add_to_group(entity_id="stockhk_hk_09626", group_name="自选股"))
+    print(add_to_group(entity_id="stockus_nyse_CRCL", group_name="自选股"))
+    print(add_to_group(entity_id="stockus_nasdaq_NVDA", group_name="自选股"))
